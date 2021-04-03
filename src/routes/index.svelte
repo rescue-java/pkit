@@ -1,6 +1,5 @@
 <script lang="ts">
   import Counter from "$lib/Counter.svelte";
-  console.log(import.meta.env.VITE_FAUNADB_SERVER_SECRET);
 </script>
 
 <main>
