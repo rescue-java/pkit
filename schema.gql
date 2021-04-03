@@ -1,0 +1,181 @@
+type Query {
+    userById(id: ID!): User
+    userByEmail(email: String!): User
+    propertyById(id: ID!): Property
+}
+
+type Mutation {
+
+
+}
+
+"""An ISO-8601 encoded UTC date string."""
+scalar DateTime
+
+"User deatils, "
+type User @collection(name: "users"){
+    id: ID!
+    name: String!
+    email: String!
+    password: String!
+    phone: String!
+    bussinessInfo: BusinessInfo
+    status: UserStatus!
+    managedProperties: [Property!]!
+    ownedProperties: [Property!]!
+    rentedProperties: [Property!]!
+}
+
+enum UserStatus {
+  DEACTIVED
+  CONFIRMING
+  ACTIVED
+  DELETED
+}
+
+type Address @embedded{
+  street: String!
+  suburb: String!
+  state: String!
+  code: String
+}
+
+type BusinessInfo @embedded{
+  name: String!
+  phone: String!
+  businessNumber: String
+  address: Address!
+}
+
+type Subscription @embedded{
+    id: ID!
+    startDate: DateTime!
+    endDate: DateTime!
+    puchaseDate: DateTime!
+    purchasePrice: Float!
+    purchaseMethod: PurchaseMethod!
+    level: SubscriptionLevel!
+}
+
+enum PurchaseMethod {
+    CREDIT_CARD
+    PAYPAL
+    APPLE_PAY
+}
+
+enum SubscriptionLevel {
+    LEVEL_1
+    LEVEL_2
+    LEVEL_3
+}
+
+type Property @collection(name: "properties"){
+    id: ID!
+    title: String!
+    address: Address!
+    bussinessInfo: BusinessInfo!
+    owners: [User!]!
+    managers: [User!]!
+    photos: [Photo!]!
+    leases: [Lease!]!
+    moneyIns: [MoneyIn!]!
+    moneyOuts: [MoneyOut!]!
+}
+
+type Photo @embedded{
+    id: ID!
+    title: String!
+    url: String!
+    order: Int!
+}
+
+type Lease @embedded{
+    id: ID!
+    startDate: DateTime!
+    endDate: DateTime!
+    rent: Float!
+    interval: RentInterval!
+    deposit: Float!
+    property: Property!
+    tenants: [User!]!
+    moneyIns: [MoneyIn!]!
+    moneyOuts: [MoneyOut!]!
+}
+
+interface Transaction {
+    id: ID!
+    date: DateTime!
+    dueDate: DateTime
+    amount: Float!
+    paidDate: DateTime
+    memo: String
+    type: TransactionType!
+    status: TransactionStatus!
+    histories: [TransactionHistory!]!
+    attachments: [Attachemt!]!
+    property: Property!
+    lease: Lease
+}
+
+type MoneyIn implements Transaction @embedded{
+    id: ID!
+    date: DateTime!
+    dueDate: DateTime
+    amount: Float!
+    paidDate: DateTime
+    memo: String
+    type: TransactionType!
+    status: TransactionStatus!
+    histories: [TransactionHistory!]!
+    attachments: [Attachemt!]!
+    property: Property!
+    lease: Lease
+}
+
+type MoneyOut implements Transaction @embedded{
+    id: ID!
+    date: DateTime!
+    amount: Float!
+    paidDate: DateTime
+    memo: String
+    type: TransactionType!
+    status: TransactionStatus!
+    histories: [TransactionHistory!]!
+    attachments: [Attachemt!]!
+    property: Property!
+    lease: Lease
+}
+
+enum TransactionType{
+    RENT
+    BILL
+    MAINTAIN
+    DEPOSIT
+    AGENTFEE
+    OTHER
+}
+
+enum TransactionStatus{
+    UNPAID
+    PENDDING
+    PAID
+}
+
+enum RentInterval {
+    WEEKLY
+    FORTNIGHTLY
+    MONTHLY
+}
+
+type TransactionHistory @embedded {
+    id: ID
+    memo: String
+    date: DateTime
+}
+
+type Attachment @embedded {
+    id: ID
+    title: String
+    url: String
+    memo: String
+}
