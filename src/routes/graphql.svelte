@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { GraphQLClient, gql, request } from "graphql-request";
+  import { GraphQLClient } from "graphql-request";
   import { onMount } from "svelte";
   import { amp, browser, dev } from "$app/env";
 
@@ -14,7 +14,7 @@
     },
   });
 
-  const query = gql`
+  const query = `
     {
       allWarehouses {
         data {
