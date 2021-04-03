@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { GraphQLClient } from "graphql-request";
   import { onMount } from "svelte";
-  import { amp, browser, dev } from "$app/env";
+  import { dev } from "$app/env";
+  import * as graphql from "graphql-request";
+  const { GraphQLClient, gql } = graphql;
 
   const endpoint = "https://graphql.fauna.com/graphql";
 
@@ -14,7 +15,7 @@
     },
   });
 
-  const query = `
+  const query = gql`
     {
       allWarehouses {
         data {
